@@ -11,7 +11,8 @@ const signupController = asyncHandler(async (req, res, next) => {
 
   try {
     await newUser.validate();
-    res.send("Hello World");
+    await userModel.create(newUser);
+    res.send("Record inserted successfully");
   } catch (err) {
     res.status(400);
     next(err, req, res);

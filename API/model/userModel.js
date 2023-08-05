@@ -10,6 +10,7 @@ const UserSchema = new Schema({
   password: {
     type: String,
     minLength: [8, "Password must have 8 characters"],
+    required: true,
     validate: [
       {
         validator: function (v) {
@@ -36,5 +37,5 @@ const UserSchema = new Schema({
   },
 });
 
-const UserModel = mongoose.model("UserModel", UserSchema);
+const UserModel = mongoose.model("users", UserSchema);
 module.exports = UserModel;
