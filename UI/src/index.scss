@@ -1,0 +1,56 @@
+$accent: rgb(64, 165, 233);
+$font: #272727;
+$headerBg: whitesmoke;
+
+body {
+  margin: 0;
+  font-family: "open-sans";
+  background-color: gray;
+  height: 100%;
+}
+
+.container {
+  background-color: white;
+  width: 800px;
+  padding: 0;
+  color: $font;
+  min-height: 100vh;
+  .form-control {
+    border-radius: 0%;
+  }
+  button {
+    background-color: white;
+    color: $accent;
+  }
+  .spinner-wrapper {
+    position: fixed !important;
+    background-color: rgba(255, 255, 255, 0.8);
+    opacity: 0.5;
+    width: 800px !important;
+    height: 100% !important;
+    z-index: 10000;
+  }
+  .spinner {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    .spinner-border {
+      color: $accent;
+    }
+  }
+}
+
+.header {
+  padding: 0.75rem;
+  background-color: $headerBg;
+  color: $accent;
+  h1 {
+    cursor: pointer;
+  }
+}
+
+.signup {
+  h2 {
+    color: $accent;
+  }
+}
