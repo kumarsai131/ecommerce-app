@@ -1,6 +1,30 @@
 const asyncHandler = require("express-async-handler");
 const userModel = require("../model/userModel");
 
+const loginContoller = asyncHandler(async (req, res, next) => {
+  const { username, password } = req.body;
+  let checkUser = await userModel.find({ username: { $eq: username } });
+
+  if (checkUser.length === 0) {
+    res.status(400);
+    throw new Error("User doesn't exist. Click on signup to create the user");
+  } else {
+    if (checkUser[0].password !== password) {
+      res.status(400);
+      throw new Error("Incorrect Password");
+    }
+  }
+
+  try {
+    res.json({
+      success: true,
+      role: checkUser[0].role,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 const userController = asyncHandler(async (req, res, next) => {
   try {
     const data = await userModel.find();
@@ -49,4 +73,9 @@ const deleteController = asyncHandler(async (req, res, next) => {
   }
 });
 
-module.exports = { userController, updateController, deleteController };
+module.exports = {
+  userController,
+  updateController,
+  deleteController,
+  loginContoller,
+};

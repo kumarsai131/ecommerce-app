@@ -4,7 +4,10 @@ const {
   userController,
   updateController,
   deleteController,
+  loginContoller,
 } = require("../controller/userController");
+
+router.post("/login", loginContoller);
 
 router.get("/getAllUsers", userController);
 
