@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
-import AdminDashboard from "./components/AdminDashboard";
+import AdminDashboard from "./components/Admin/AdminDashboard";
 import Products from "./components/Products";
 
 function App() {

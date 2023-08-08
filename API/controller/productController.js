@@ -24,17 +24,55 @@ const addController = asyncHandler(async (req, res, next) => {
   }
 });
 
-const getController = asyncHandler(async (req, res) => {
-  const { courseName, price } = req.body;
+const getController = asyncHandler(async (req, res, next) => {
+  let limitPerPage = "";
+  let currentPage = "";
 
-  // 100000 courses
-  // Pagination
-  //   let checkCourse = await productModel.count();
-  //   let checkCourse = await productModel.find().select({ courseName: 0 }); // 1 include, 0 exclude
-  let checkCourse = await productModel.find().sort({ price: -1 }); // 1 ascending -1 descending
-  res.json({
-    totalProducts: checkCourse,
-  });
+  if (req.query) {
+    limitPerPage = parseInt(req.query.limitPerPage);
+    currentPage = parseInt(req.query.currentPage);
+  }
+
+  let skip = 0;
+  if (limitPerPage && currentPage) {
+    skip = (currentPage - 1) * limitPerPage;
+  }
+
+  try {
+    let total = await productModel.find().count();
+    let products = await productModel.find().skip(skip).limit(limitPerPage);
+    res.json({
+      totalNumberOfProducts: total,
+      products: products,
+      skip: skip,
+    });
+  } catch (err) {
+    res.status(400);
+    next(err);
+  }
 });
 
-module.exports = { addController, getController };
+const updateController = async (req, res, next) => {
+  const { id, isPublished } = req.body;
+
+  if (!id) {
+    throw new Error("ID is missing.");
+  }
+  try {
+    await productModel.findByIdAndUpdate(id, { isPublished: isPublished });
+    res.json({
+      success: true,
+    });
+  } catch (err) {
+    res.status(400);
+    next(err);
+  }
+};
+
+// total number of products
+// limit per page 3
+// total/limit per page
+// if i am in the second, first 3 products from the db should be skipped
+// 2nd page, pageNo*limit items should be skipped
+
+module.exports = { addController, getController, updateController };

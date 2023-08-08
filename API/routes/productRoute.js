@@ -3,9 +3,11 @@ const router = express.Router();
 const {
   addController,
   getController,
+  updateController,
 } = require("../controller/productController");
 
 router.post("/addProduct", addController);
-router.post("/getProduct", getController);
+router.get("/getProducts", getController);
+router.patch("/updateProduct", updateController);
 
 module.exports = router;

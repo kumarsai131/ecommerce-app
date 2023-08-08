@@ -18,6 +18,10 @@ body {
   .form-control {
     border-radius: 0%;
   }
+  .row {
+    margin: 0;
+    padding: 0;
+  }
   button {
     background-color: white;
     color: $accent;
@@ -37,6 +41,21 @@ body {
     .spinner-border {
       color: $accent;
     }
+  }
+
+  .button-selected {
+    background-color: $accent;
+    color: #fff;
+  }
+  .card {
+    border-color: $accent;
+  }
+
+  .currency {
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    margin-left: -0.25rem;
   }
 }
 
