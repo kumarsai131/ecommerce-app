@@ -26,6 +26,7 @@ export default function AdminDashboard() {
         {list.map((e) => {
           return (
             <Button
+              key={e.name}
               className={`form-control ${
                 selected === e.id ? "button-selected" : ""
               }`}

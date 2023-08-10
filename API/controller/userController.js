@@ -14,11 +14,12 @@ const loginContoller = asyncHandler(async (req, res, next) => {
       throw new Error("Incorrect Password");
     }
   }
-
   try {
     res.json({
       success: true,
+      id: checkUser[0]._id,
       role: checkUser[0].role,
+      username: username,
     });
   } catch (err) {
     next(err);

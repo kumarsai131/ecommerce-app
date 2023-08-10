@@ -25,6 +25,7 @@ body {
   button {
     background-color: white;
     color: $accent;
+    border-radius: 0;
   }
   .spinner-wrapper {
     position: fixed !important;
@@ -56,6 +57,18 @@ body {
     display: flex;
     align-items: center;
     margin-left: -0.25rem;
+  }
+
+  .cart-badge {
+    background-color: whitesmoke !important;
+    font-size: 14px;
+    display: block;
+    margin-bottom: -0.5rem;
+  }
+
+  .icon {
+    font-size: 30px;
+    cursor: pointer;
   }
 }
 

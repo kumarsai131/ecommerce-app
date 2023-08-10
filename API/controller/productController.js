@@ -25,22 +25,27 @@ const addController = asyncHandler(async (req, res, next) => {
 });
 
 const getController = asyncHandler(async (req, res, next) => {
-  let limitPerPage = "";
-  let currentPage = "";
-
-  if (req.query) {
-    limitPerPage = parseInt(req.query.limitPerPage);
-    currentPage = parseInt(req.query.currentPage);
-  }
+  let limitPerPage = parseInt(req.query.limitPerPage);
+  let currentPage = parseInt(req.query.currentPage);
 
   let skip = 0;
   if (limitPerPage && currentPage) {
     skip = (currentPage - 1) * limitPerPage;
   }
 
+  let query = {};
+  if (req.query.role === "User") {
+    query = {
+      isPublished: true,
+    };
+  }
+
   try {
-    let total = await productModel.find().count();
-    let products = await productModel.find().skip(skip).limit(limitPerPage);
+    let total = await productModel.find(query).count();
+    let products = await productModel
+      .find(query)
+      .skip(skip)
+      .limit(limitPerPage);
     res.json({
       totalNumberOfProducts: total,
       products: products,

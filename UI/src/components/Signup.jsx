@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ErrorBlock from "./ErrorBlock";
 import Spinner from "./Spinner";
 import ModalPopup from "./Modal";
+import { urls } from "../utils/urls";
 
 export default function Signup() {
   const [userName, setUserName] = useState("");
@@ -18,7 +19,7 @@ export default function Signup() {
     setError(null);
     setLoading(true);
     axios
-      .post("http://localhost:8080/signup", {
+      .post(urls.signup, {
         username: userName,
         password: password,
         role: role,
@@ -71,7 +72,7 @@ export default function Signup() {
         <div className="col-md-4 mb-3">
           <label>Role</label>
           <select
-            class="form-control"
+            className="form-control"
             onChange={(e) => setRole(e.target.value)}
           >
             <option value="Admin">Admin</option>
@@ -79,14 +80,10 @@ export default function Signup() {
           </select>
         </div>
         <div className="col-md-12 d-flex justify-content-center">
-          {error ? (
-            <ErrorBlock
-              errorCode={error.errorCode}
-              errorMessage={error.errorMessage}
-            />
-          ) : (
-            ""
-          )}
+          <ErrorBlock
+            errorCode={error?.errorCode}
+            errorMessage={error?.errorMessage}
+          />
         </div>
         <div className="col-md-2">
           <button className="w-100 py-2" onClick={callSignup}>
