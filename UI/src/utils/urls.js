@@ -6,4 +6,6 @@ export const urls = {
   getProducts: baseUrl + "getProducts",
   updateProduct: baseUrl + "updateProduct",
   getAllUsers: baseUrl + "getAllUsers",
+  addToCart: baseUrl + "addToCart",
+  getCartProducts: baseUrl + "getCartProducts",
 };

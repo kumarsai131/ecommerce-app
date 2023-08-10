@@ -5,6 +5,7 @@ import Login from "./components/Login";
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import Products from "./components/User/Products";
 import { useEffect, useState } from "react";
+import Cart from "./components/User/Cart";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -31,6 +32,7 @@ function App() {
           <>
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/cart" element={<Cart />} />
           </>
         )}
       </Routes>

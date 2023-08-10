@@ -35,6 +35,9 @@ const UserSchema = new Schema({
   role: {
     type: String,
   },
+  productId: {
+    type: [mongoose.Types.ObjectId],
+  },
 });
 
 const UserModel = mongoose.model("users", UserSchema);

@@ -19,6 +19,10 @@ export default function Header() {
     return !val;
   }
 
+  function navigateToCart() {
+    navigate("/cart");
+  }
+
   return (
     <nav className="header d-flex align-items-center justify-content-between">
       <h1 onClick={redirectToHome}>
@@ -27,7 +31,10 @@ export default function Header() {
       {homepage() && (
         <div className="d-flex align-items-end">
           {!location.pathname.includes("/admin-dashboard") && (
-            <div className="position-relative text-center me-4">
+            <div
+              className="position-relative text-center me-4"
+              onClick={navigateToCart}
+            >
               <Badge text="dark" className="cart-badge">
                 9
               </Badge>
