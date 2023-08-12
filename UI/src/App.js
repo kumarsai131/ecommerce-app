@@ -4,15 +4,17 @@ import Signup from "./components/Signup";
 import Login from "./components/Login";
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import Products from "./components/User/Products";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import Cart from "./components/User/Cart";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     if (sessionStorage.getItem("user")) {
+      setRole(sessionStorage.getItem("role"));
       setIsLoggedIn(true);
     } else {
       navigate("/");
@@ -25,16 +27,36 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<Login setIsLoggedIn={(val) => setIsLoggedIn(val)} />}
+          element={
+            <Login
+              setIsLoggedIn={(val) => setIsLoggedIn(val)}
+              setRole={(val) => setRole(val)}
+            />
+          }
         />
         <Route path="signup" element={<Signup />} />
         {isLoggedIn && (
           <>
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/cart" element={<Cart />} />
+            {role === "Admin" && (
+              <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            )}
+            {role === "User" && (
+              <>
+                <Route path="/products" element={<Products />} />
+                <Route path="/cart" element={<Cart />} />
+              </>
+            )}
           </>
         )}
+        {/* <Route
+          path="*"
+          element={
+            <Login
+              setIsLoggedIn={(val) => setIsLoggedIn(val)}
+              setRole={(val) => setRole(val)}
+            />
+          }
+        /> */}
       </Routes>
     </div>
   );

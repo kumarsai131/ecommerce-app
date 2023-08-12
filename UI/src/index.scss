@@ -70,6 +70,15 @@ body {
     font-size: 30px;
     cursor: pointer;
   }
+
+  .cartProduct {
+    border: 1px solid $accent;
+  }
+
+  .priceDetails {
+    border: 1px solid $accent;
+    height: fit-content;
+  }
 }
 
 .header {

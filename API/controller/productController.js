@@ -57,10 +57,11 @@ const getController = asyncHandler(async (req, res, next) => {
   }
 });
 
-const updateController = async (req, res, next) => {
+const updateController = asyncHandler(async (req, res, next) => {
   const { id, isPublished } = req.body;
 
   if (!id) {
+    res.status(400);
     throw new Error("ID is missing.");
   }
   try {
@@ -72,7 +73,7 @@ const updateController = async (req, res, next) => {
     res.status(400);
     next(err);
   }
-};
+});
 
 // total number of products
 // limit per page 3

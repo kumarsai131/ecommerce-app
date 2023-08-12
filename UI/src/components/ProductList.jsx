@@ -76,9 +76,9 @@ export default function ProductList({ updatePublish, role, addToCart }) {
                 <Card.Text>
                   Some quick example text to build on the card title and make up
                   the bulk of the card's content.
-                  <span>Author - {e.author}</span>
+                  <br />
+                  <span>Author - {e.author}</span> <br />
                   <span className="fw-bold currency">
-                    {" "}
                     <span className="material-symbols-outlined">
                       currency_rupee
                     </span>
@@ -94,7 +94,9 @@ export default function ProductList({ updatePublish, role, addToCart }) {
                     <Button
                       variant="primary"
                       className="form-control"
-                      onClick={() => updatePublish(e)}
+                      onClick={() => {
+                        console.log(updatePublish(e));
+                      }}
                     >
                       {e.isPublished ? "Un-Publish" : "Publish"}
                     </Button>

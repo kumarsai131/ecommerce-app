@@ -8,10 +8,10 @@ import { urls } from "../../utils/urls";
 export default function AddEditProducts() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [toggle, setToggle] = useState(false);
 
   function updatePublish(data) {
     setLoading(true);
+    setError(null);
     axios
       .patch(urls.updateProduct, {
         id: data?._id,
@@ -19,11 +19,11 @@ export default function AddEditProducts() {
       })
       .then((res) => {
         if (res.data.success) {
-          setToggle(!toggle);
+          data.isPublished = !data?.isPublished;
         }
       })
       .catch((err) => {
-        setError(err);
+        setError(err?.response?.data);
       })
       .finally(() => {
         setLoading(false);
@@ -35,14 +35,11 @@ export default function AddEditProducts() {
       <div className="row px-3 ">
         <Spinner loading={loading} />
         <ErrorBlock
+          className="col-md-12"
           errorCode={error?.errorCode}
           errorMessage={error?.errorMessage}
         />
-        <ProductList
-          key={toggle}
-          updatePublish={(val) => updatePublish(val)}
-          role="Admin"
-        />
+        <ProductList updatePublish={(val) => updatePublish(val)} role="Admin" />
       </div>
     </>
   );

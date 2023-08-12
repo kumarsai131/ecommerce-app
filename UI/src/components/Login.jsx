@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import ErrorBlock from "./ErrorBlock";
 import { urls } from "../utils/urls";
 
-export default function Login({ setIsLoggedIn }) {
+export default function Login({ setIsLoggedIn, setRole }) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,6 +34,7 @@ export default function Login({ setIsLoggedIn }) {
           sessionStorage.setItem("user", res.data.id);
           sessionStorage.setItem("role", res.data.role);
           setIsLoggedIn(true);
+          setRole(res?.data?.role);
           if (res.data?.role === "Admin") {
             navigate("/admin-dashboard");
           } else {
