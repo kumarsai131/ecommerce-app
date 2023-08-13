@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const mongoose = require("mongoose");
 const userModel = require("../model/userModel");
+const ordersModel = require("../model/ordersModel");
 
 const loginContoller = asyncHandler(async (req, res, next) => {
   const { username, password } = req.body;
@@ -96,7 +97,6 @@ const getCartController = async (req, res, next) => {
   const { userId } = req.body;
 
   try {
-    // // when we compare strings
     // const data = await userModel.aggregate([
     //   {
     //     $lookup: {
@@ -107,10 +107,6 @@ const getCartController = async (req, res, next) => {
     //     },
     //   },
     // ]);
-
-    // let id = Object(data.productId)
-    // expression 2+3
-    // _id === idFromUserCollection
 
     // const data = await userModel.aggregate([
     //   {
@@ -129,7 +125,11 @@ const getCartController = async (req, res, next) => {
     //   },
     // ]);
 
+    const userIdAsObject = new mongoose.Types.ObjectId(userId);
     const data = await userModel.aggregate([
+      {
+        $match: { $expr: { $eq: [userIdAsObject, "$_id"] } },
+      },
       {
         $lookup: {
           from: "products",
@@ -138,19 +138,116 @@ const getCartController = async (req, res, next) => {
           as: "cart",
         },
       },
+      {
+        $project: {
+          cart: 1,
+        },
+      },
     ]);
-    let currentUserData = data.find((e) => {
-      return e._id.toString() === userId;
-    });
+
     res.json({
       success: true,
-      cart: currentUserData.cart,
+      cart: data.length ? data[0].cart : [],
     });
   } catch (err) {
     res.status(400);
     next(err, req, res);
   }
 };
+
+const placeOrderController = asyncHandler(async (req, res, next) => {
+  const { userId, productId } = req.body;
+
+  if (!userId || !productId) {
+    res.status(400);
+    throw new Error("User Id or Product Id is missing");
+  }
+
+  try {
+    const data = await ordersModel.create({
+      userId: userId,
+      productId: productId,
+    });
+    res.send({
+      success: true,
+      orderId: data?._id,
+    });
+  } catch (err) {
+    res.status(400);
+    next(err, req, res);
+  }
+});
+
+const clearCartController = asyncHandler(async (req, res, next) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    res.status(400);
+    throw new Error("User Id is missing");
+  }
+
+  try {
+    const userIdObject = new mongoose.Types.ObjectId(userId);
+    await userModel.findByIdAndUpdate(userIdObject, {
+      productId: [],
+    });
+    res.send({
+      success: true,
+    });
+  } catch (err) {
+    res.status(400);
+    next(err, req, res);
+  }
+});
+
+const getOrdersController = asyncHandler(async (req, res, next) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    res.status(400);
+    throw new Error("User Id is missing");
+  }
+
+  try {
+    const userIdObject = new mongoose.Types.ObjectId(userId);
+    const data = await userModel.aggregate([
+      {
+        $match: { $expr: { $eq: [userIdObject, "$_id"] } },
+      },
+      {
+        $lookup: {
+          from: "orders",
+          localField: "_id",
+          foreignField: "userId",
+          as: "Orders",
+        },
+      },
+      {
+        $unwind: "$Orders",
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "Orders.productId",
+          foreignField: "_id",
+          as: "Products",
+        },
+      },
+      {
+        $project: {
+          Products: 1,
+        },
+      },
+    ]);
+    res.json({
+      success: true,
+      products: data,
+    });
+  } catch (err) {
+    res.status(400);
+    next(err, req, res);
+  }
+});
 
 module.exports = {
   userController,
@@ -159,4 +256,7 @@ module.exports = {
   loginContoller,
   addToCartController,
   getCartController,
+  placeOrderController,
+  clearCartController,
+  getOrdersController,
 };

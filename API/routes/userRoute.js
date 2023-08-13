@@ -7,6 +7,9 @@ const {
   loginContoller,
   addToCartController,
   getCartController,
+  placeOrderController,
+  clearCartController,
+  getOrdersController,
 } = require("../controller/userController");
 
 router.post("/login", loginContoller);
@@ -20,5 +23,11 @@ router.delete("/deleteUser/:id", deleteController);
 router.post("/addToCart", addToCartController);
 
 router.post("/getCartProducts", getCartController);
+
+router.post("/placeOrder", placeOrderController);
+
+router.post("/clearCart", clearCartController);
+
+router.post("/getOrders", getOrdersController);
 
 module.exports = router;

@@ -8,4 +8,7 @@ export const urls = {
   getAllUsers: baseUrl + "getAllUsers",
   addToCart: baseUrl + "addToCart",
   getCartProducts: baseUrl + "getCartProducts",
+  placeOrder: baseUrl + "placeOrder",
+  getOrders: baseUrl + "getOrders",
+  clearCart: baseUrl + "clearCart",
 };
