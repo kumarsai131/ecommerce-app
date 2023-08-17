@@ -1,9 +1,31 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import Badge from "react-bootstrap/Badge";
+import { useEffect, useState } from "react";
+import { getCartAPI } from "./User/ApiCalls";
+import { getCart, getCartLength } from "../redux/cartReducer";
 
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
+  const cartLength = useSelector((state) => state.getCartReducer.cartLength);
+  const dispatch = useDispatch();
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (["/cart", "/"].indexOf(location.pathname) < 0) {
+      getCartAPI()
+        .then((res) => {
+          if (res?.data?.success) {
+            dispatch(getCart(res.data.cart));
+            dispatch(getCartLength(res.data.cart.length));
+          }
+        })
+        .catch((err) => {
+          setError(err);
+        });
+    }
+  }, []);
 
   function redirectToHome() {
     navigate("/");
@@ -23,6 +45,10 @@ export default function Header() {
     navigate("/cart");
   }
 
+  function redirectToOrders() {
+    navigate("/orders");
+  }
+
   return (
     <nav className="header d-flex align-items-center justify-content-between">
       <h1 onClick={redirectToHome}>
@@ -31,17 +57,22 @@ export default function Header() {
       {homepage() && (
         <div className="d-flex align-items-end">
           {!location.pathname.includes("/admin-dashboard") && (
-            <div
-              className="position-relative text-center me-4"
-              onClick={navigateToCart}
-            >
-              <Badge text="dark" className="cart-badge">
-                9
-              </Badge>
-              <span className="material-symbols-outlined icon">
-                shopping_cart
-              </span>
-            </div>
+            <>
+              <div className="me-3" onClick={redirectToOrders}>
+                <span className="material-symbols-outlined icon">person</span>
+              </div>
+              <div
+                className="position-relative text-center me-4"
+                onClick={navigateToCart}
+              >
+                <Badge text="dark" className="cart-badge">
+                  {cartLength ? cartLength : ""}
+                </Badge>
+                <span className="material-symbols-outlined icon">
+                  shopping_cart
+                </span>
+              </div>
+            </>
           )}
 
           <div>

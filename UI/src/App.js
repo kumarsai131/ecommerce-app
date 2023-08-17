@@ -4,8 +4,9 @@ import Signup from "./components/Signup";
 import Login from "./components/Login";
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import Products from "./components/User/Products";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Cart from "./components/User/Cart";
+import Orders from "./components/User/Orders";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -44,6 +45,7 @@ function App() {
               <>
                 <Route path="/products" element={<Products />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/orders" element={<Orders />} />
               </>
             )}
           </>

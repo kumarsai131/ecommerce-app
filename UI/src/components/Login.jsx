@@ -31,6 +31,8 @@ export default function Login({ setIsLoggedIn, setRole }) {
       })
       .then((res) => {
         if (res.data.success) {
+          sessionStorage.setItem("token", res.data.token);
+          sessionStorage.setItem("refreshToken", res.data.refreshToken);
           sessionStorage.setItem("user", res.data.id);
           sessionStorage.setItem("role", res.data.role);
           setIsLoggedIn(true);

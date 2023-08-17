@@ -1,63 +1,70 @@
-import axios from "axios";
-import { urls } from "../../utils/urls";
 import Button from "react-bootstrap/Button";
 import { useEffect, useState } from "react";
 import ErrorBlock from "../ErrorBlock";
 import ModalPopup from "../Modal";
 import { useNavigate } from "react-router-dom";
+import {
+  clearCartAPI,
+  getCartAPI,
+  placeOrderAPI,
+  removeFromCartAPI,
+} from "./ApiCalls";
+import { useDispatch, useSelector } from "react-redux";
+import { getCart, getCartLength } from "../../redux/cartReducer";
 
 export default function Cart() {
-  const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState("");
   const navigate = useNavigate();
-
-  function getCart() {
-    setError(null);
-    axios
-      .post(urls.getCartProducts, {
-        userId: sessionStorage.getItem("user"),
-      })
-      .then((res) => {
-        if (res.data.success) {
-          setProducts(res.data.cart);
-        }
-      })
-      .catch((err) => {
-        setError(err.response.data);
-      });
-  }
-
-  function clearCart() {
-    axios.post(urls.clearCart, {
-      userId: sessionStorage.getItem("user"),
-    });
-  }
+  const products = useSelector((state) => state.getCartReducer.cart);
+  const dispatch = useDispatch();
 
   function placeOrder() {
-    setError(null);
     let items = products.map((e) => e._id);
-    axios
-      .post(urls.placeOrder, {
-        userId: sessionStorage.getItem("user"),
-        productId: items,
-      })
+    setError(null);
+    placeOrderAPI(items)
       .then((res) => {
         if (res?.data?.success) {
-          clearCart();
-          setProducts([]);
+          clearCartAPI();
+          dispatch(getCart([]));
+          dispatch(getCartLength(0));
           setShowModal(res?.data?.orderId);
         }
       })
       .catch((err) => {
-        setError(err.response.data);
+        setError(err);
+      });
+  }
+
+  function getCartproducts() {
+    getCartAPI()
+      .then((res) => {
+        if (res?.data?.success) {
+          dispatch(getCart(res.data.cart));
+          dispatch(getCartLength(res.data.cart.length));
+        }
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  }
+
+  function removeCartItem(id) {
+    removeFromCartAPI(id)
+      .then((res) => {
+        if (res?.data?.success) {
+          getCartproducts();
+        }
+      })
+      .catch((err) => {
+        setError(err);
       });
   }
 
   useEffect(() => {
-    getCart();
+    getCartproducts();
   }, []);
 
   useEffect(() => {
@@ -93,7 +100,15 @@ export default function Cart() {
               {products.map((e) => {
                 return (
                   <div className="col-md-11 mb-3 p-3 cartProduct" key={e._id}>
-                    <div>{e.courseName}</div>
+                    <div className="d-flex justify-content-between align-items-center">
+                      {e.courseName}
+                      <span
+                        className="material-symbols-outlined cursor-pointer"
+                        onClick={() => removeCartItem(e._id)}
+                      >
+                        delete
+                      </span>
+                    </div>
                     <div>Author - {e.author}</div>
                     <div className="d-flex">
                       Price -{"  "}

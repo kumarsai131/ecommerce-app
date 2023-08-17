@@ -4,6 +4,7 @@ const dotenv = require("dotenv").config();
 const cors = require("cors");
 const errorHandler = require("./middleware/errorHandler");
 const mongoDBConnection = require("./config/mongoConnection");
+const verifyTokenMiddleware = require("./middleware/authMiddleware");
 
 mongoDBConnection();
 
@@ -11,6 +12,7 @@ mongoDBConnection();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+app.use(verifyTokenMiddleware);
 
 // Routes
 const signupRoute = require("./routes/signupRoute");

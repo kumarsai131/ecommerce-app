@@ -1,11 +1,15 @@
 const asyncHandler = require("express-async-handler");
 const userModel = require("../model/userModel");
+const bcrypt = require("bcrypt");
 
 const signupController = asyncHandler(async (req, res, next) => {
   const { username, password, role } = req.body;
+
+  let encryptedPassword = await bcrypt.hash(password, 10);
+
   let newUser = new userModel({
     username,
-    password,
+    password: encryptedPassword,
     role,
   });
 

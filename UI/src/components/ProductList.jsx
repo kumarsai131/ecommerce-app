@@ -30,7 +30,7 @@ export default function ProductList({ updatePublish, role, addToCart }) {
         setSkip(res.data.skip);
       })
       .catch((err) => {
-        setError(err);
+        setError(err?.response?.data);
       })
       .finally(() => {
         setLoading(false);
