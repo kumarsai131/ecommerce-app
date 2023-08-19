@@ -12,9 +12,12 @@ const {
   getOrdersController,
   refreshTokenContoller,
   removeFromCartController,
+  logoutContoller,
 } = require("../controller/userController");
 
 router.post("/login", loginContoller);
+
+router.post("/logout", logoutContoller);
 
 router.get("/getAllUsers", userController);
 

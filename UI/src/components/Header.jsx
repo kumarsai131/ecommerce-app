@@ -13,7 +13,7 @@ export default function Header() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (["/cart", "/"].indexOf(location.pathname) < 0) {
+    if (["/cart", "/", "/logout"].indexOf(location.pathname) < 0) {
       getCartAPI()
         .then((res) => {
           if (res?.data?.success) {
@@ -32,8 +32,7 @@ export default function Header() {
   }
 
   function logout() {
-    sessionStorage.clear();
-    navigate("/");
+    navigate("/logout");
   }
 
   function homepage() {
@@ -48,6 +47,17 @@ export default function Header() {
   function redirectToOrders() {
     navigate("/orders");
   }
+
+  useEffect(() => {
+    // window.addEventListener(
+    //   "beforeunload",
+    //   function (e) {
+    //     // Do something
+    //     console.log(e);
+    //   },
+    //   false
+    // );
+  });
 
   return (
     <nav className="header d-flex align-items-center justify-content-between">

@@ -4,6 +4,7 @@ const userModel = require("../model/userModel");
 const ordersModel = require("../model/ordersModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { v4 } = require("uuid");
 
 const loginContoller = asyncHandler(async (req, res, next) => {
   const { username, password } = req.body;
@@ -19,12 +20,23 @@ const loginContoller = asyncHandler(async (req, res, next) => {
       throw new Error("Incorrect Password");
     }
   }
+
+  if (checkUser[0].sessionId.length >= 2) {
+    res.status(400);
+    throw new Error("You cannot login in more than two devices at a time.");
+  }
+
   try {
     const token = await generateToken(checkUser[0]._id, checkUser[0].role);
     const refreshToken = await generateRefreshToken(
       checkUser[0]._id,
       checkUser[0].role
     );
+    let userIdObject = new mongoose.Types.ObjectId(checkUser[0]._id);
+    const sessionId = v4();
+    await userModel.findByIdAndUpdate(userIdObject, {
+      $addToSet: { sessionId: sessionId },
+    });
 
     res.json({
       success: true,
@@ -33,9 +45,32 @@ const loginContoller = asyncHandler(async (req, res, next) => {
       username: username,
       token: token,
       refreshToken: refreshToken,
+      sessionId: sessionId,
     });
   } catch (err) {
     next(err);
+  }
+});
+
+const logoutContoller = asyncHandler(async (req, res, next) => {
+  const { userId, sessionId } = req.body;
+
+  if (!userId || !sessionId) {
+    res.status(400);
+    throw new Error("User Id or Session Id is missing");
+  }
+
+  try {
+    const userIdObject = new mongoose.Types.ObjectId(userId);
+    await userModel.findByIdAndUpdate(userIdObject, {
+      $pull: { sessionId: sessionId },
+    });
+    res.json({
+      success: true,
+    });
+  } catch (err) {
+    res.status(400);
+    next(err, req, res);
   }
 });
 
@@ -321,7 +356,7 @@ const refreshTokenContoller = asyncHandler(async (req, res, next) => {
     jwt.verify(refreshToken, process.env.REFRESH_SECRET, async (err, user) => {
       if (err) {
         res.status(401);
-        next("Unauthorized", req, res);
+        next("Unauthorized - Refresh Token is expired.", req, res);
       } else {
         const { id, role } = user;
         const newToken = await generateToken(id, role);
@@ -345,7 +380,7 @@ async function generateToken(id, role) {
     },
     process.env.TOKEN_SECRET,
     {
-      expiresIn: "30s",
+      expiresIn: "5m",
     }
   );
 
@@ -381,4 +416,5 @@ module.exports = {
   clearCartController,
   getOrdersController,
   refreshTokenContoller,
+  logoutContoller,
 };

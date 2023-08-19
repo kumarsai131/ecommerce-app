@@ -7,6 +7,7 @@ import Products from "./components/User/Products";
 import { useEffect, useState } from "react";
 import Cart from "./components/User/Cart";
 import Orders from "./components/User/Orders";
+import Logout from "./components/Logout";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -36,6 +37,7 @@ function App() {
           }
         />
         <Route path="signup" element={<Signup />} />
+        <Route path="logout" element={<Logout />} />
         {isLoggedIn && (
           <>
             {role === "Admin" && (

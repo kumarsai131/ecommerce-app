@@ -35,6 +35,7 @@ export default function Login({ setIsLoggedIn, setRole }) {
           sessionStorage.setItem("refreshToken", res.data.refreshToken);
           sessionStorage.setItem("user", res.data.id);
           sessionStorage.setItem("role", res.data.role);
+          sessionStorage.setItem("sessionId", res.data.sessionId);
           setIsLoggedIn(true);
           setRole(res?.data?.role);
           if (res.data?.role === "Admin") {

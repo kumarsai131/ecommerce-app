@@ -46,3 +46,13 @@ export async function placeOrderAPI(products) {
     return err?.response?.data;
   }
 }
+
+export async function logoutAPI() {
+  try {
+    return await axios.post(urls.logout, {
+      sessionId: sessionStorage.getItem("sessionId"),
+    });
+  } catch (err) {
+    return err?.response?.data;
+  }
+}

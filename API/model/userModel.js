@@ -38,6 +38,7 @@ const UserSchema = new Schema({
   productId: {
     type: [mongoose.Types.ObjectId],
   },
+  sessionId: [String],
 });
 
 const UserModel = mongoose.model("users", UserSchema);

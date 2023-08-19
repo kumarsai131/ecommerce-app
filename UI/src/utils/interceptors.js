@@ -24,10 +24,14 @@ axios.interceptors.response.use(
     return config;
   },
   (error) => {
-    // Check the stack out error for refresh token
     const originalReq = error.config;
+    if (error.response?.status === 401) {
+      window.location.replace("/logout");
+    }
+
     if (error.response?.status === 403 && !originalReq._retry) {
       originalReq._retry = true;
+      // Axios Instance will fix the unlimited looping
       return axios
         .post(urls.refreshToken, {
           refreshToken: sessionStorage.getItem("refreshToken"),
@@ -38,7 +42,8 @@ axios.interceptors.response.use(
             error.config.headers["Authorization"] = "Bearer " + res.data.token;
             return axios_instance(error.config);
           }
-        });
+        })
+        .catch((err) => {});
     }
     return Promise.reject(error);
   }
