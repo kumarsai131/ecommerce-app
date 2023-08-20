@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const productModel = require("../model/productsModel");
+const mongoose = require("mongoose");
 
 const addController = asyncHandler(async (req, res, next) => {
   const { courseName, author, price, tags, isPublished } = req.body;
@@ -47,6 +48,7 @@ const getController = asyncHandler(async (req, res, next) => {
       .skip(skip)
       .limit(limitPerPage);
     res.json({
+      success: true,
       totalNumberOfProducts: total,
       products: products,
       skip: skip,
@@ -58,20 +60,24 @@ const getController = asyncHandler(async (req, res, next) => {
 });
 
 const updateController = asyncHandler(async (req, res, next) => {
-  const { id, isPublished } = req.body;
+  const { id } = req.body;
 
   if (!id) {
     res.status(400);
     throw new Error("ID is missing.");
   }
   try {
-    await productModel.findByIdAndUpdate(id, { isPublished: isPublished });
+    const productIdObject = new mongoose.Types.ObjectId(id);
+    await productModel.findByIdAndUpdate(productIdObject, {
+      ...req.body,
+      image: req.file ? req.file.filename : undefined,
+    });
     res.json({
       success: true,
     });
   } catch (err) {
     res.status(400);
-    next(err);
+    next(err, req, res);
   }
 });
 

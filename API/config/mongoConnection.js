@@ -6,7 +6,7 @@ const mongoDBConnection = async () => {
       process.env.MONGO_URL + "/ecommerce-app"
     );
   } catch (err) {
-    console.log(err);
+    return Promise.reject(err);
   }
 };
 

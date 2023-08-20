@@ -2,9 +2,10 @@ import Spinner from "./Spinner";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
-import { urls } from "../utils/urls.js";
+import { baseUrl, urls } from "../utils/urls.js";
 import { useState, useEffect } from "react";
 import ErrorBlock from "./ErrorBlock";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductList({ updatePublish, role, addToCart }) {
   const [products, setProducts] = useState([]);
@@ -15,6 +16,7 @@ export default function ProductList({ updatePublish, role, addToCart }) {
   const limitPerPage = 3;
   const [paginationArray, setPaginationArray] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
 
   function getProducts() {
     setError(null);
@@ -25,9 +27,11 @@ export default function ProductList({ updatePublish, role, addToCart }) {
           `?limitPerPage=${limitPerPage}&currentPage=${currentPage}&role=${role}`
       )
       .then((res) => {
-        setTotal(res.data.totalNumberOfProducts);
-        setProducts(res.data.products);
-        setSkip(res.data.skip);
+        if (res.data.success) {
+          setTotal(res.data.totalNumberOfProducts);
+          setProducts(res.data.products);
+          setSkip(res.data.skip);
+        }
       })
       .catch((err) => {
         setError(err?.response?.data);
@@ -35,6 +39,12 @@ export default function ProductList({ updatePublish, role, addToCart }) {
       .finally(() => {
         setLoading(false);
       });
+  }
+
+  function updateCourse(e) {
+    navigate("/updateProduct", {
+      state: e,
+    });
   }
 
   useEffect(() => {
@@ -70,7 +80,13 @@ export default function ProductList({ updatePublish, role, addToCart }) {
         return (
           <div className="col-md-4 mb-4" key={e._id}>
             <Card className="">
-              {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
+              {e.image && (
+                <Card.Img
+                  variant="top"
+                  src={baseUrl + "images/" + e.image}
+                  style={{ height: "150px" }}
+                />
+              )}
               <Card.Body>
                 <Card.Title>{e.courseName}</Card.Title>
                 <Card.Text>
@@ -88,7 +104,11 @@ export default function ProductList({ updatePublish, role, addToCart }) {
                 </Card.Text>
                 {role === "Admin" && (
                   <>
-                    <Button variant="primary" className="form-control mb-2">
+                    <Button
+                      variant="primary"
+                      className="form-control mb-2"
+                      onClick={() => updateCourse(e)}
+                    >
                       Update
                     </Button>
                     <Button

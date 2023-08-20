@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Cart from "./components/User/Cart";
 import Orders from "./components/User/Orders";
 import Logout from "./components/Logout";
+import UpdateProducts from "./components/Admin/UpdateProducts";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -41,7 +42,10 @@ function App() {
         {isLoggedIn && (
           <>
             {role === "Admin" && (
-              <Route path="/admin-dashboard" element={<AdminDashboard />} />
+              <>
+                <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                <Route path="/updateProduct" element={<UpdateProducts />} />
+              </>
             )}
             {role === "User" && (
               <>

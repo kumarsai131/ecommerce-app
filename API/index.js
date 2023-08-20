@@ -10,6 +10,7 @@ mongoDBConnection();
 
 // Middleware
 app.use(express.json());
+app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(verifyTokenMiddleware);
@@ -24,5 +25,15 @@ app.use("/", productRoute);
 
 // Custom Middleware
 app.use(errorHandler);
+
+// process.on("uncaughtException", (err) => {
+//   console.log(err);
+// });
+// console.log(x);
+
+// process.on("unhandledRejection", (err) => {
+//   console.log(err.name, err.message);
+//   process.exit(1);
+// });
 
 app.listen(process.env.PORT);
